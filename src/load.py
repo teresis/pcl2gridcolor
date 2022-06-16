@@ -2,15 +2,16 @@ import numpy as np
 import math
 import cv2
 import os 
+import sys
 
-file_path = "../data/"
-file_list = os.listdir(file_path)
-print(file_list)
-for f in file_list:
-	print(file_path + f)
-	grid = np.fromfile(file_path + f, dtype=np.float)
-	grid = np.reshape(grid, (500, 500))
-	print(grid.shape)
-	print(grid[np.nonzero(grid)])
-	cv2.imshow("window", grid)
-	cv2.waitKey(0)
+file_path = sys.argv[1]
+
+grid = np.fromfile(file_path , dtype=np.float)
+shape = int(np.sqrt(grid.shape[0]))
+print(shape)
+print(grid)
+grid = np.reshape(grid, (shape, shape))
+grid = cv2.resize(grid, (500,500), interpolation = cv2.INTER_LINEAR)
+
+cv2.imshow("window", grid)
+cv2.waitKey(0)
