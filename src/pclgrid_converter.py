@@ -33,7 +33,7 @@ x_min = np.min(points[:,0])
 z_max = np.max(points[:,2])
 z_min = np.min(points[:,2])
 
-gridsize = (int(z_max//SCALE + abs(x_min)//SCALE + 2*OFFSET), int(x_max//SCALE + abs(x_min)//SCALE + 2*OFFSET))
+gridsize = np.array([int(z_max//SCALE + abs(x_min)//SCALE + 2*OFFSET), int(x_max//SCALE + abs(x_min)//SCALE + 2*OFFSET)])
 grid = np.zeros((gridsize))
 
 print("(x max, x min) : ",x_max, x_min)
@@ -56,8 +56,8 @@ for r in range(len(grid)):
 			 grid[r][c] = 0.5
 		 else:
 			 grid[r][c] = 1
-
-grid.tofile(file_path+".bin")
+gridmap = np.concatenate((gridsize, grid.flatten())) 
+gridmap.tofile(file_path +".bin")
 
 grid = cv2.resize(grid, (500,500), interpolation = cv2.INTER_LINEAR)
 cv2.imshow("window", grid)

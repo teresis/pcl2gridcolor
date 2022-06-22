@@ -38,7 +38,5 @@ main (int argc, char** argv)
 	pcl::PCDWriter writer;
 	writer.write<pcl::PointXYZ> ("map_inliners.pcd", *cloud_filtered, false);
 
-
-	
 	return (0);
 }
