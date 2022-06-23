@@ -111,6 +111,9 @@ class MainObject:
 		label = Label(astarframe, fg='#8080FF', textvariable=self.astarlabelvar)
 		label.pack()
 
+		printbtn = Button(qtframe, text="Print QuadTree", command=self.onButtonPrintPress)
+		printbtn.pack(pady=2)
+
 		label = Label(rightframe, text="Instructions", font=("Helvetica", 13))
 		label.pack()
 		label = Label(rightframe, justify=LEFT, text=
@@ -125,6 +128,8 @@ class MainObject:
 		self.canvas.bind('<ButtonRelease-1>', self.onMouseButton1Release)
 		self.canvas.bind('<B1-Motion>', self.onMouseMove)
 
+	def onButtonPrintPress(self):
+		print_tree(self.quadtree)
 
 	def onMouseButton1Press(self, event):
 		if not self.quadtree:
@@ -222,23 +227,30 @@ class MainObject:
 
 def draw_quadtree(draw, tile, maxdepth):
 	if tile.level == maxdepth:
-		draw_tile(draw, tile, color=(255, 110, 110))
+		draw_tile(draw, tile, color=200)
 		return
 
 	if tile.childs:
 		for child in tile.childs:
 			draw_quadtree(draw, child, maxdepth)
 	else:
-		draw_tile(draw, tile, color=(255, 110, 110))
+		draw_tile(draw, tile, color=100)
 
 
 def draw_tile(draw, tile, color):
-	color = 100
 	draw.rectangle([tile.bb.x, tile.bb.y, tile.bb.x+tile.bb.w, tile.bb.y+tile.bb.h], outline=color)
 
 
 def fill_tile(draw, tile, color):
 	draw.rectangle([tile.bb.x+1, tile.bb.y+1, tile.bb.x+tile.bb.w-1, tile.bb.y+tile.bb.h-1], outline=None, fill=128)
+
+def print_tree(tree):
+	if(tree == None):
+		return
+	print("level: {}, boundingbox:[{}, {}, {}, {}]".format(tree.level, tree.bb.x, tree.bb.y, tree.bb.w, tree.bb.h))	
+	if(tree.childs):
+		for child in tree.childs:
+			print_tree(child)
 
 
 
