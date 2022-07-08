@@ -122,7 +122,7 @@ class Tile:
                 
         
     def _setimage(self, image, limit):
-        if len(image.getcolors()) == 1:
+        if len(image.getcolors(image.size[0]*image.size[1])) == 1:
             # image is uniformly colored
             # Tile is a leaf Tile i.e. no childs 
             # recursion ends here. color is the uniform color of the image

@@ -142,8 +142,10 @@ class MainObject:
 		startx, starty, _, _ = self.canvas.coords(self.startpoint)
 		start = self.quadtree.get(startx + 6, starty + 6)
 		goal = self.quadtree.get(event.x, event.y)
+		print(start.level)
+		print(goal.level)
 		if self.endpoint:
-			self.canvas.delete(self.endpoint)
+			#self.canvas.delete(self.endpoint)
 			self.endpoint = self.canvas.create_oval(event.x-3, event.y-3, event.x+3, event.y+3, fill='#FF0000', width=1)
 		else:
 			self.endpoint = self.canvas.create_oval(event.x-3, event.y-3, event.x+3, event.y+3, fill='#FF0000', width=1)
@@ -153,16 +155,17 @@ class MainObject:
 		path, distances, considered = astar.astar(adjacent, graph.euclidian, graph.euclidian, start, goal)
 
 		im = self.qtmapimage.copy()
+		im = im.convert("RGB");
 		draw = ImageDraw.Draw(im)
 
 		self.astarlabelvar.set("Nodes visited: {} considered: {}".format(len(distances), considered))
 		for tile in distances:
-			fill_tile(draw, tile, color=(0xC0, 0xC0, 0xFF))
+			fill_tile(draw, tile, (0,255,255,255))
 
 		if path:
 			self.pathlabelvar.set("Path Cost: {}  Nodes: {}".format(round(distances[goal], 1), len(path)))
 			for tile in path:
-				fill_tile(draw, tile, color=(0, 0, 255))
+				fill_tile(draw, tile, (0,255,0,255))
 		else:
 			self.pathlabelvar.set("No Path found.")
 
@@ -215,7 +218,7 @@ class MainObject:
 
 		if not self.startpoint:
 			pos = MAPSIZE//2
-			self.startpoint = self.canvas.create_oval(pos-3, pos-3, pos+3, pos+3, fill='#2028FF', width=1)
+			self.startpoint = self.canvas.create_oval(pos-3, pos-3, pos+3, pos+3, fill='#FF00FF', width=1)
 
 
 	def _updateimage(self, image):
@@ -242,7 +245,7 @@ def draw_tile(draw, tile, color):
 
 
 def fill_tile(draw, tile, color):
-	draw.rectangle([tile.bb.x+1, tile.bb.y+1, tile.bb.x+tile.bb.w-1, tile.bb.y+tile.bb.h-1], outline=None, fill=128)
+	draw.rectangle([tile.bb.x+1, tile.bb.y+1, tile.bb.x+tile.bb.w-1, tile.bb.y+tile.bb.h-1], fill=color)
 
 def print_tree(tree):
 	if(tree == None):
