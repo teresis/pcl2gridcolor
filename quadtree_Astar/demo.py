@@ -165,14 +165,35 @@ class MainObject:
 			self.endpoint = self.canvas.create_oval(event.x-3, event.y-3, event.x+3, event.y+3, fill='#FF0000', width=1)
 			self.destPoint.append(self.endpoint)
 
-
-		adjacent = graph.make_adjacent_function(self.quadtree)
-		path, distances, considered = astar.astar(adjacent, graph.euclidian, graph.euclidian, start, self.goalList[0])
-
 		if(len(self.goalList) >1):
-			addPath, addDistance, addConsidered = astar.astar(adjacent, graph.euclidian, graph.euclidian, self.goalList[0],self.goalList[1])
-			path = path+addPath
-			considered = considered + addConsidered
+			adjacent = graph.make_adjacent_function(self.quadtree)
+			path1, distances1, considered1 = astar.astar(adjacent, graph.euclidian, graph.euclidian, start, self.goalList[0])
+			pathCost1 = distances1[self.goalList[0]]
+	
+			addPath, addDistances, addConsidered = astar.astar(adjacent, graph.euclidian, graph.euclidian, self.goalList[0],self.goalList[1])
+			path1 = path1+addPath
+			considered1 = considered1 + addConsidered
+			pathCost1 = round(pathCost1 + addDistances[self.goalList[1]], 1)
+
+			path2, distances2, considered2 = astar.astar(adjacent, graph.euclidian, graph.euclidian, start, self.goalList[1])
+			pathCost2 = distances2[self.goalList[1]]
+			
+			addPath, addDistances, addConsidered = astar.astar(adjacent, graph.euclidian, graph.euclidian, self.goalList[1],self.goalList[0])
+			path2 = path2+addPath
+			considered2 = considered2 + addConsidered
+			pathCost2 = round(pathCost2 + addDistances[self.goalList[0]], 1)
+
+			if (pathCost1 < pathCost2):
+				path = path1
+				cost = pathCost1 
+			else:
+				path = path2
+				cost = pathCost2
+		else:
+			adjacent = graph.make_adjacent_function(self.quadtree)
+			path, distances, considered = astar.astar(adjacent, graph.euclidian, graph.euclidian, start, self.goalList[0])
+			cost = round(distances[self.goalList[0]],1)
+
 
 		im = self.qtmapimage.copy()
 		im = im.convert("RGB");
@@ -184,7 +205,7 @@ class MainObject:
 			fill_tile(draw, tile, (0,255,255,255))
 		'''
 		if path:
-			self.pathlabelvar.set("Path Cost: {}  Nodes: {}".format(round(distances[self.goalList[0]], 1), len(path)))
+			self.pathlabelvar.set("Path Cost: {}  Nodes: {}".format(cost, len(path)))
 			for tile in path:
 				fill_tile(draw, tile, (0,255,0,255))
 		else:
